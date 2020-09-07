@@ -13,7 +13,7 @@ def Blossoms(c,k,I,u):
 
     #Size of array of "hot control points"
     size = c.shape[0]
-    print("Size of array is now" + " " + str(size))
+    #print("Size of array is now" + " " + str(size))
     # Array for storing new control points
 
     #Should be size (1,2), then 2,2... (i,2)
@@ -24,7 +24,7 @@ def Blossoms(c,k,I,u):
     #If the size is 1 c is S(u)
 
     if size == 1:
-        print("S(u) is" +str(c))
+        #print("S(u) is" +str(c))
         return c
 
     for i in range (1,size):
@@ -53,8 +53,8 @@ def Blossoms(c,k,I,u):
 
 
 
-        print("New element created")
-        print (newcontrolpoints)
+        #print("New element created")
+        #print (newcontrolpoints)
 
     #For every call the size of newcontrolpoints is smaller until s(u) is returned.
     return Blossoms(newcontrolpoints,k,I,u)

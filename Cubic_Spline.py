@@ -25,7 +25,7 @@ class Cubic_Spline:
     def __call__(self, u):
         #Find hot interval. Index of the element with higher value - 1.
         I = (self.knot_points > u).argmax()-1
-        print("Index is" + str(I))
+        #print("Index is" + str(I))
 
         if I == 0:
             return self.control_points[0]
@@ -35,8 +35,8 @@ class Cubic_Spline:
 
         #Find control points d_(I-2) to d_(I+1)
         four_control = self.control_points[I-2:I+2]
-        print("First four points:")
-        print(four_control)
+        #print("First four points:")
+        #print"(four_control)
 
         #Run deBoor
         #Three times to obtain d[u,u,u]
@@ -51,17 +51,17 @@ class Cubic_Spline:
 
     def plot(self):
         x = linspace(0, 1, len(self.knot_points))
-        plt.plot(x, self.knot_points)
+        #plt.plot(x, self.knot_points)
         """
         Plot the cubic spline (self.s_u), its control polygon and the de Boor points
         :return: None
         """
-        plt.plot(self.su[:, 0], self.su[:, 1], 'b')
-        plt.plot(self.control_points[:, 0], self.control_points[:, 1], '-.r')  # control polygon
-        plt.scatter(self.control_points[:, 0], self.control_points[:, 1], color='red')  # de Boor points
+        #plt.plot(self.su[:, 0], self.su[:, 1], 'b')
+        #plt.plot(self.control_points[:, 0], self.control_points[:, 1], '-.r')  # control polygon
+        #plt.scatter(self.control_points[:, 0], self.control_points[:, 1], color='red')  # de Boor points
 
-        plt.grid()
-        plt.show()
+        #plt.grid()
+        #plt.show()
 
 
 
