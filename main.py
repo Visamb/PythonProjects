@@ -1,47 +1,84 @@
-# This is a sample Python script.
-
-# Press Skift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-from  scipy import *
-from  numpy import *
-from Cubic_Spline import *
-from Nfunc import Nfunc
-from matplotlib import pyplot as plt
-
-test_control = array( [[-40, 20],[-40, 20],[-40, 20], [-20, 0], [-100, -15], [-22, -62], [8, -78], [57, -30], [15, 8], [18, -3], [40, 17],[40, 17],[40, 17]])
-test_knots = array([0,0,0, 1, 2, 3, 4, 5, 6, 7, 8,8,8])
-test_u = 3
-
-testSpline = Cubic_Spline(test_knots,test_control)
-testSpline.plot()
-su = testSpline(test_u)
-#print(su)
+from numpy import *
+from OptimizationProblem import *
+import matplotlib.pyplot as plt
+from Newton import *
+from QuasiNewton import *
+from linesearchmethods import inexact_linesearch
 
 
+def rosenbrock(x):  # optimal solution is (1,1)
+    if len(x) != 2:
+        raise ValueError("Rosenbrock takes arguments from R^2, not R^{}".format(len(x)))
+        return
+
+    x_1 = x[0]
+    x_2 = x[1]
+    return 100*(x_2 - x_1**2)**2 + (1 - x_1)**2
 
 
-size = 1000
-xspace = linspace(0,8,size)
-nvals = zeros(size)
-nvals2 = zeros(size)
-maxval = amax(test_knots)
-for i in range(0, size):
- nvals[i] = Nfunc(test_knots, 2, 3, i*8/size)
- nvals2[i] = Nfunc(test_knots, 2, 3, i*8/size)
+def contour_rosenbrock(levels=100, optipoints=array([])):
+    """
+    Plots the contours of the rosenbrock function, alternatively together with the optimization points
+    :param levels: (int) number of level curves we want to display
+    :param optipoints: (array)
+    :return: None
+    """
 
-print(str(nvals.shape))
-print(str(xspace.shape))
+    # Verifying that 'optipoints' has the correct shape
+    if optipoints.shape == (0,):
+        pass
+    elif optipoints.ndim == 2 and len(optipoints) == 2:  # optipoints is an ndarray with 2 rows
+        pass
+    else:
+        raise ValueError("\'optipoints\' must have exactly 2 rows")
 
-plt.plot(xspace, nvals, 'b')
-plt.plot(xspace, nvals2, 'r')
-plt.grid()
-plt.show()
+    size = 1000
+    x = linspace(-0.5, 2, size)
+    y = linspace(-1.5, 4, size)
+    X, Y = meshgrid(x, y)
+    input = array([X, Y])
+    Z = rosenbrock(input)
+
+    if len(optipoints) != 0:  # plot optimization points (either optipoints is empty or has 2 columns)
+        plt.scatter(optipoints[0, :], optipoints[1, :])
+
+    plt.contour(X, Y, Z, levels)
+    plt.title("Contour plot of Rosenbrock's function")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.show()
+
+
+def function(x):
+    value = 3*sin(x[0]) + sin(x[1])
+    return value
+
+
+def gradient(x):
+    grad = cos(x[0])+cos(x[1])
+    return grad
+
+
+def task7():
+    x = array([[0],
+               [3]])
+    rho = 0.1
+    sigma = 0.7
+    tau = 0.1
+    chi = 9
+    problem = OptimizationProblem(rosenbrock)
+    method = QuasiNewton(problem)
+    s = method.gradient(x)
+    res = inexact_linesearch(rosenbrock, x, s, rho, sigma, tau, chi)
+    print(res)
 
 
 
+problem = OptimizationProblem(rosenbrock)
+solution = Newton(problem)
+min_point, min_value = solution.solve()
+optipoints = solution.values
+print(min_point)
+contour_rosenbrock(optipoints=optipoints)
 
-
-
-
-
-
+# q = QuasiNewton(problem)
